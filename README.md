@@ -1,1 +1,1 @@
-# nzta_sign_scaping
+# nzta_sign_scraping

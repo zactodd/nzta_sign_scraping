@@ -26,10 +26,8 @@ function download_signs(url, outdir)
         code = replace(r[1].children[1].text, "/" => "_")
         url = "$(NZTA_URL)$(attrs(r[4].children[1])["href"])"
         gif_url = url |> sign_image_nzta_spec
-
-        # TODO better names
-        ds = Dates.format(Dates.now(), "yyyy_mm_dd__HH_MM_SS_sss")
-        HTTP.download(gif_url, "$(outdir)/$(ds)_image.gif")
+        name = split(gif_url, "/")[end]
+        HTTP.download(gif_url, "$(outdir)/$(name)")
     end
 end
 
@@ -39,3 +37,4 @@ function sign_image_nzta_spec(url)
     gif = eachmatch(sel"div > table:nth-child(5) > tbody > tr:nth-child(5) > td > a", page.root)[1]
     return "$(NZTA_URL)$(attrs(gif)["href"])"
 end
+

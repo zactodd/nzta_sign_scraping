@@ -32,6 +32,3 @@ function image_from_spec(url)
         return "$NZTA_URL$(attrs(matches[1])["href"])"
     end
 end
-
-
-download_all_signs("images")

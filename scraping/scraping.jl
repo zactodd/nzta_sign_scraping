@@ -17,7 +17,7 @@ function download_signs(url, outdir)
     rows = eachmatch(sel"div.\[.col.\].typography > table > tbody", page.root)
     image_urls = [eachmatch(sel"td", r) |> spec_url |> image_from_spec for r in rows]
     for url in skipmissing(image_urls)
-        name = replace(split(url, "/")[end], ".gif" => ".png")
+        name = split(url, "/")[end]
         HTTP.download(url, "$outdir/$name")
     end
 end
@@ -32,3 +32,6 @@ function image_from_spec(url)
         return "$NZTA_URL$(attrs(matches[1])["href"])"
     end
 end
+
+
+download_all_signs("images")

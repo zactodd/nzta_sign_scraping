@@ -26,11 +26,7 @@ end
 function image_from_spec(url)
     page = get_page(url)
     matches = eachmatch(sel"div > table:nth-child(5) > tbody > tr:nth-child(5) > td > a", page.root)
-    if length(matches) == 0
-        return missing
-    else
-        return "$NZTA_URL$(attrs(matches[1])["href"])"
-    end
+    return length(matches) == 0 ? missing : "$NZTA_URL$(attrs(matches[1])["href"])"
 end
 
 

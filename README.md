@@ -1,7 +1,7 @@
-# nzta_sign_scraping
+# NZTA Road Sign Scraping
 
 ## Dependencies
-The packages are HTTP, Gumbo, Cascadia, Dates, and KissThreading.
+The packages are HTTP, Gumbo, Cascadia, Dates, KissThreading and JSON.
 They can be installed with the following.
 
 ```julia
@@ -10,6 +10,7 @@ Pkg.add("HTTP")
 Pkg.add("Gumbo")
 Pkg.add("Cascadia")
 Pkg.add("KissThreading")
+Pkg.add("JSON")
 ```
 
 ## Running
@@ -20,4 +21,4 @@ julia --threads 40 scraping.ji
 ```
 
 ### Issues
-
+If there is an 403 the cookie in resources/headers.json may need to be updated.

@@ -1,5 +1,4 @@
-using HTTP, Gumbo, Cascadia, Dates, KissThreading
-
+using HTTP, Gumbo, Cascadia, Dates, KissThreading, JSON
 
 NZTA_URL = "https://www.nzta.govt.nz"
 SIGNS_SEARCH_URL = "$NZTA_URL/resources/traffic-control-devices-manual/sign-specifications"
@@ -7,10 +6,7 @@ SIGN_SEARCH_ALL_QUERY = "?category=&sortby=Default&term="
 ALL_SIGNS_URL = "$SIGNS_SEARCH_URL/$SIGN_SEARCH_ALL_QUERY"
 
 
-COOKIE = "visid_incap_508956=i5z5wEhsRWSSJqIT+eKo2/qmg18AAAAAQUIPAAAAAAADMlOx+pty1Z0vLeNwwUWL; _ga=GA1.3.54630425.1602463484; _gcl_au=1.1.2029631771.1602463484; incap_ses_998_508956=F2pQS+AdkwqDCVCP95vZDURAs18AAAAARGytWs3/ZTpVxX4qlBbeZw==; _gid=GA1.3.1213075170.1605582935"
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36"
-HEADERS = ["cookie" => COOKIE, "user-agent" => USER_AGENT]
-
+HEADERS = JSON.parsefile("$(@__DIR__)/../resources/headers.json")
 
 get_page(url, h=HEADERS) = HTTP.request("GET", url, headers=h).body |> String |> parsehtml
 all_pages(url=SIGNS_SEARCH_URL) = ["$url$SIGN_SEARCH_ALL_QUERY&start=$(i)" for i in 0:30:1155]
@@ -22,12 +18,11 @@ function download_signs(url, outdir)
     page = get_page(url)
     rows = eachmatch(sel"div.\[.col.\].typography > table > tbody", page.root)
     image_urls = [eachmatch(sel"td", r) |> spec_url |> image_from_spec for r in rows]
-    for url in skipmissing(image_urls)
-        name = split(url, "/")[end]
+    for sign_url in skipmissing(image_urls)
+        name = split(sign_url, "/")[end]
         try
-            HTTP.download(url, "$outdir/$name")
+            HTTP.download(sign_url, "$outdir/$name", headers=HEADERS)
         catch e
-            println("Failure on $url")
             println(e)
         end
     end

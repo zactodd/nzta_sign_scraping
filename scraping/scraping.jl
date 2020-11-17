@@ -1,4 +1,4 @@
-using HTTP, Gumbo, Cascadia, Dates
+using HTTP, Gumbo, Cascadia, Dates, KissThreading
 
 NZTA_URL = "https://www.nzta.govt.nz"
 SIGNS_SEARCH_URL = "$NZTA_URL/resources/traffic-control-devices-manual/sign-specifications"
@@ -26,11 +26,7 @@ end
 function image_from_spec(url)
     page = get_page(url)
     matches = eachmatch(sel"div > table:nth-child(5) > tbody > tr:nth-child(5) > td > a", page.root)
-    if length(matches) == 0
-        return missing
-    else
-        return "$NZTA_URL$(attrs(matches[1])["href"])"
-    end
+    return length(matches) ? "$NZTA_URL$(attrs(matches[1])["href"])" : missing
 end
 
 
